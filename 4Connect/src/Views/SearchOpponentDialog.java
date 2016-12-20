@@ -13,6 +13,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.JOptionPane;
 import Models.Packet;
 
 /**
@@ -193,29 +194,35 @@ public class SearchOpponentDialog extends javax.swing.JDialog implements Observe
     {
         Packet packet = (Packet)obj;
         //TODO bei notify die ip übergeben und noch cast richtig anpassen
-        
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        Vector row = new Vector();
+        String ip = packet.getIp().getHostAddress();
+       
         switch(packet.getCommand())
         {
             case  Hallo:
                 //ip in liste hinzufügen
-                DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-                Vector row = new Vector();
-                row.add(packet.getIp().getHostAddress());
-                
+                row.add(ip);
                 model.addRow(row);
                 
                 break;
             case GameRequest:
                 // meldung ob angenommen werden soll
-                //
+                int dialogButton = JOptionPane.YES_NO_OPTION;
+                int dialogResult = JOptionPane.showConfirmDialog(null, ip+" möchte gegen Sie spielen. Annehmen?", "Spielanfrage", dialogButton);
+                if (dialogResult == 0){
+                    opponent.acceptGameRequest();
+                } else {
+                    
+                }
                 
                 break;
             case AcceptRequest:
-                //stop listener
+                opponent.terminateThread();
                 break;
                 
             case RefuseRequest:
-                //meldung, dass refused msgbox
+                JOptionPane.showMessageDialog(null, "Ihr Gegner hat abgelehnt.", "Kein Spiel", JOptionPane.PLAIN_MESSAGE);
                 break;
              
                 

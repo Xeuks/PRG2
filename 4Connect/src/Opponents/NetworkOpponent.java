@@ -22,6 +22,7 @@ import Models.Packet;
  */
 public class NetworkOpponent extends Observable implements IOpponent, Observer, Runnable {
     private final static int PORT = 4601;
+    private static boolean running = false;
     private DatagramSocket socket;
     
     public enum Commands {Hallo, GameRequest, AcceptRequest, RefuseRequest, TurnDecision}
@@ -49,7 +50,7 @@ public class NetworkOpponent extends Observable implements IOpponent, Observer, 
         
         //thread to listen for hallo commands
         // add all host which respond to local list
-       
+       new Thread(this).start();
         
         
     }
@@ -126,6 +127,9 @@ public class NetworkOpponent extends Observable implements IOpponent, Observer, 
         //  stop hallo and gamerequest listener threads notify searchopponentdialog
     }
     
+    public void terminateThread(){
+        running = false;
+    }
     
     
     
@@ -152,14 +156,15 @@ public class NetworkOpponent extends Observable implements IOpponent, Observer, 
     
     @Override
     public void run(){
-        while(true)
+        running = true;
+        while(running)
         {
             try {
                 broadcastListener();
             } catch (IOException ex) {
-                //todo
+                System.out.println(ex.getMessage());
             } catch (ClassNotFoundException ex) {
-                
+                System.out.println(ex.getMessage());
             }
         }
         
