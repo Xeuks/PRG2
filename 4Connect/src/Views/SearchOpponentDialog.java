@@ -6,8 +6,14 @@
 package Views;
 
 import Opponents.NetworkOpponent;
+import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.table.DefaultTableModel;
+import Models.Packet;
 
 /**
  *
@@ -20,7 +26,7 @@ public class SearchOpponentDialog extends javax.swing.JDialog implements Observe
     /**
      * Creates new form SearchOpponentDialog
      */
-    public SearchOpponentDialog(java.awt.Frame parent, boolean modal) {
+    public SearchOpponentDialog(java.awt.Frame parent, boolean modal) throws IOException {
         super(parent, modal);
         initComponents();
         opponent = new NetworkOpponent();
@@ -59,6 +65,11 @@ public class SearchOpponentDialog extends javax.swing.JDialog implements Observe
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jButton1.setText("Refresh List");
+        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton1MouseClicked(evt);
+            }
+        });
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -71,6 +82,11 @@ public class SearchOpponentDialog extends javax.swing.JDialog implements Observe
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        jTable2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                jTable2MouseReleased(evt);
+            }
+        });
         jScrollPane2.setViewportView(jTable2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -96,6 +112,21 @@ public class SearchOpponentDialog extends javax.swing.JDialog implements Observe
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jTable2MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable2MouseReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTable2MouseReleased
+
+    private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
+        try {
+            //clear jtable
+            DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+            model.setRowCount(0);
+            opponent.broadcastHallo();
+        } catch (IOException ex) {
+            Logger.getLogger(SearchOpponentDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton1MouseClicked
 
     /**
      * @param args the command line arguments
@@ -127,14 +158,20 @@ public class SearchOpponentDialog extends javax.swing.JDialog implements Observe
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                SearchOpponentDialog dialog = new SearchOpponentDialog(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                SearchOpponentDialog dialog;
+                try {
+                    dialog = new SearchOpponentDialog(new javax.swing.JFrame(), true);
+                    dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
                         System.exit(0);
                     }
                 });
                 dialog.setVisible(true);
+                } catch (IOException ex) {
+                    Logger.getLogger(SearchOpponentDialog.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
             }
         });
     }
@@ -154,29 +191,37 @@ public class SearchOpponentDialog extends javax.swing.JDialog implements Observe
      @Override
     public void update(Observable obs, Object obj)
     {
-        NetworkOpponent.Packet packet = (NetworkOpponent.Packet)obj;
+        Packet packet = (Packet)obj;
         //TODO bei notify die ip übergeben und noch cast richtig anpassen
-        String ip = (String)obj;
         
         switch(packet.getCommand())
         {
-            case Hallo:
+            case  Hallo:
                 //ip in liste hinzufügen
+                DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+                Vector row = new Vector();
+                row.add(packet.getIp().getHostAddress());
+                
+                model.addRow(row);
+                
                 break;
             case GameRequest:
                 // meldung ob angenommen werden soll
                 //
+                
                 break;
+            case AcceptRequest:
+                //stop listener
+                break;
+                
+            case RefuseRequest:
+                //meldung, dass refused msgbox
+                break;
+             
+                
         }      
     }
-    
-    public void OnRefresh()
-    {
-                //diese methode im eventhandler von select refresh aufrufen
-
-        //TODO remove entries from gui
-        opponent.broadcastHallo();
-    }
+   
     
     public void onSelect()
     {

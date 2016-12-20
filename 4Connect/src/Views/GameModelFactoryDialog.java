@@ -7,6 +7,9 @@ package Views;
 import Models.*;
 import Opponents.ComputerOpponent;
 import Opponents.NetworkOpponent;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 /**
  *
  * @author K.Schumi
@@ -120,11 +123,17 @@ public class GameModelFactoryDialog extends javax.swing.JDialog{
 
     private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
         
-        SearchOpponentDialog b = new SearchOpponentDialog(null, true);
+        SearchOpponentDialog b;
+        try {
+            b = new SearchOpponentDialog(null, true);
+        
         b.setVisible(true);
  
         NetworkOpponent networkOpp = b.getOpponent();
         gameModel = new GameModel(jSlider1.getValue(), jSlider2.getValue(), networkOpp, b.hasRequestedGame()); 
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
         dispose();
     }//GEN-LAST:event_jButton2MouseClicked
 

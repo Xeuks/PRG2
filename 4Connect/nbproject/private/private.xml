@@ -3,11 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/K.Schumi/Documents/HSLU/PRG2/Projekt/4Connect/src/Opponents/IOpponent.java</file>
-            <file>file:/C:/Users/K.Schumi/Documents/HSLU/PRG2/Projekt/4Connect/src/Opponents/ComputerOpponent.java</file>
-            <file>file:/C:/Users/K.Schumi/Documents/HSLU/PRG2/Projekt/4Connect/src/pkg4connect/GameController.java</file>
-            <file>file:/C:/Users/K.Schumi/Documents/HSLU/PRG2/Projekt/4Connect/src/Models/GameModel.java</file>
-            <file>file:/C:/Users/K.Schumi/Documents/HSLU/PRG2/Projekt/4Connect/src/Opponents/NetworkOpponent.java</file>
+            <file>file:/C:/Users/Damir/Documents/NetBeansProjects/4Connect/PRG2/4Connect/src/Views/SearchOpponentDialog.java</file>
+            <file>file:/C:/Users/Damir/Documents/NetBeansProjects/4Connect/PRG2/4Connect/src/Opponents/NetworkOpponent.java</file>
+            <file>file:/C:/Users/Damir/Documents/NetBeansProjects/4Connect/PRG2/4Connect/src/Views/GameModelFactoryDialog.java</file>
+            <file>file:/C:/Users/Damir/Documents/NetBeansProjects/4Connect/PRG2/4Connect/src/Models/GameModel.java</file>
+            <file>file:/C:/Users/Damir/Documents/NetBeansProjects/4Connect/PRG2/4Connect/src/Opponents/HelloListener.java</file>
+            <file>file:/C:/Users/Damir/Documents/NetBeansProjects/4Connect/PRG2/4Connect/src/pkg4connect/GameController.java</file>
+            <file>file:/C:/Users/Damir/Documents/NetBeansProjects/4Connect/PRG2/4Connect/src/Models/TurnDecision.java</file>
         </group>
     </open-files>
 </project-private>
