@@ -121,7 +121,7 @@ public class SearchOpponentDialog extends javax.swing.JDialog implements Observe
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
         try {
             //clear jtable
-            DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+            DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
             model.setRowCount(0);
             opponent.broadcastHallo();
         } catch (IOException ex) {
@@ -194,7 +194,7 @@ public class SearchOpponentDialog extends javax.swing.JDialog implements Observe
     {
         Packet packet = (Packet)obj;
         //TODO bei notify die ip übergeben und noch cast richtig anpassen
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
         Vector row = new Vector();
         String ip = packet.getIp().getHostAddress();
        
