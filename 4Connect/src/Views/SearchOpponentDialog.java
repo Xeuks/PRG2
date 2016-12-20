@@ -74,21 +74,33 @@ public class SearchOpponentDialog extends javax.swing.JDialog implements Observe
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "IP Adresse", "Hostname"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jTable2.setColumnSelectionAllowed(true);
+        jTable2.getTableHeader().setReorderingAllowed(false);
         jTable2.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                jTable2MouseReleased(evt);
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable2MouseClicked(evt);
             }
         });
         jScrollPane2.setViewportView(jTable2);
+        jTable2.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        if (jTable2.getColumnModel().getColumnCount() > 0) {
+            jTable2.getColumnModel().getColumn(0).setResizable(false);
+            jTable2.getColumnModel().getColumn(1).setResizable(false);
+        }
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -114,10 +126,6 @@ public class SearchOpponentDialog extends javax.swing.JDialog implements Observe
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTable2MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable2MouseReleased
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTable2MouseReleased
-
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
         try {
             //clear jtable
@@ -129,6 +137,17 @@ public class SearchOpponentDialog extends javax.swing.JDialog implements Observe
         }
     }//GEN-LAST:event_jButton1MouseClicked
 
+    private void jTable2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable2MouseClicked
+        try {
+            //Erster Parameter ist IP, die von ausgewähltem Row gelesen wird
+            //PORT wurde auf public (anstatt private) gesetzt, ok?
+            opponent.sendGameRequest((String)jTable2.getModel().getValueAt(jTable2.getSelectedRow(),0), opponent.PORT);
+        } catch (IOException ex) {
+            Logger.getLogger(SearchOpponentDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jTable2MouseClicked
+
+    
     /**
      * @param args the command line arguments
      */
@@ -196,20 +215,23 @@ public class SearchOpponentDialog extends javax.swing.JDialog implements Observe
         //TODO bei notify die ip übergeben und noch cast richtig anpassen
         DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
         Vector row = new Vector();
+        
         String ip = packet.getIp().getHostAddress();
-       
+        String hostname = packet.getIp().getHostName();
+        
         switch(packet.getCommand())
         {
             case  Hallo:
                 //ip in liste hinzufügen
                 row.add(ip);
+                row.add(hostname);
                 model.addRow(row);
                 
                 break;
             case GameRequest:
                 // meldung ob angenommen werden soll
                 int dialogButton = JOptionPane.YES_NO_OPTION;
-                int dialogResult = JOptionPane.showConfirmDialog(null, ip+" möchte gegen Sie spielen. Annehmen?", "Spielanfrage", dialogButton);
+                int dialogResult = JOptionPane.showConfirmDialog(null, hostname+" möchte gegen Sie spielen. Annehmen?", "Spielanfrage", dialogButton);
                 if (dialogResult == 0){
                     opponent.acceptGameRequest();
                 } else {

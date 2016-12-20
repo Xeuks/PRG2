@@ -11,8 +11,8 @@ import java.io.*;
 import java.net.*;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Enumeration;
+
 import Models.Packet;
 
 /**
@@ -21,9 +21,10 @@ import Models.Packet;
  * @author D. Hodzic
  */
 public class NetworkOpponent extends Observable implements IOpponent, Observer, Runnable {
-    private final static int PORT = 4601;
+    public final static int PORT = 4601;
     private static boolean running = false;
     private DatagramSocket socket;
+    public InetAddress broadcast;
     
     public enum Commands {Hallo, GameRequest, AcceptRequest, RefuseRequest, TurnDecision}
     
@@ -79,6 +80,18 @@ public class NetworkOpponent extends Observable implements IOpponent, Observer, 
 
     public void broadcastHallo() throws IOException
     {
+        /*
+        System.setProperty("java.net.preferIPv4Stack" , "true");
+        Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+        while (interfaces.hasMoreElements()) {
+            NetworkInterface networkInterface = interfaces.nextElement();
+            if (networkInterface.isLoopback())
+                continue;    // Don't want to broadcast to the loopback interface
+            networkInterface.getInterfaceAddresses().stream().forEach((interfaceAddress) -> {
+                broadcast = interfaceAddress.getBroadcast();
+            });
+        }       */ 
+        
         int[] hParam = new int []{1,PORT};
         Packet helloPacket = new Packet(Commands.Hallo,hParam);
         
@@ -91,6 +104,10 @@ public class NetworkOpponent extends Observable implements IOpponent, Observer, 
     }
     
     public void broadcastListener() throws IOException, ClassNotFoundException {
+        
+
+
+        
         byte[] buffer = new byte[1024];
         byte[] data;
         DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
@@ -101,14 +118,22 @@ public class NetworkOpponent extends Observable implements IOpponent, Observer, 
         
         Packet hPacket = deserialize(data);
         hPacket.setIp(packet.getAddress());
+        setChanged();
         notifyObservers(hPacket);
     }
     
-    public boolean sendGameRequest(String ip, int port)
+    public boolean sendGameRequest(String ip, int port) throws IOException
     {
         //send request to ip on port 4600
         //wait for response
+        //Woher X, Y kriegen und in Packet übergeben?
+        int[] grParam = new int []{2};
+        Packet grPacket = new Packet(Commands.GameRequest,grParam);
         
+        byte[] grByte = serialize(grPacket);
+        
+        DatagramPacket packet = new DatagramPacket(grByte, grByte.length,InetAddress.getByName(ip), PORT);
+        socket.send(packet);
         //if accept ret true
         //  stop hallo and gamerequest listener threads
         //  connect to tcp server socket
