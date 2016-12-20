@@ -233,9 +233,13 @@ public class SearchOpponentDialog extends javax.swing.JDialog implements Observe
                 int dialogButton = JOptionPane.YES_NO_OPTION;
                 int dialogResult = JOptionPane.showConfirmDialog(null, hostname+" möchte gegen Sie spielen. Annehmen?", "Spielanfrage", dialogButton);
                 if (dialogResult == 0){
-                    opponent.acceptGameRequest();
+                    try {
+                        opponent.acceptGameRequest();
+                    } catch (IOException ex) {
+                        Logger.getLogger(SearchOpponentDialog.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 } else {
-                    
+                    //if dialogresult != 0 dann schliessen
                 }
                 
                 break;

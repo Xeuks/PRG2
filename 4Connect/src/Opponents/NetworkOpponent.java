@@ -11,7 +11,9 @@ import java.io.*;
 import java.net.*;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.Enumeration;
+
+//für Broadcast adresse in broadcasthallo()
+// import java.util.Enumeration;
 
 import Models.Packet;
 
@@ -24,7 +26,8 @@ public class NetworkOpponent extends Observable implements IOpponent, Observer, 
     public final static int PORT = 4601;
     private static boolean running = false;
     private DatagramSocket socket;
-    public InetAddress broadcast;
+    //Variable für broadcasthello()
+    //public InetAddress broadcast;
     
     public enum Commands {Hallo, GameRequest, AcceptRequest, RefuseRequest, TurnDecision}
     
@@ -80,7 +83,7 @@ public class NetworkOpponent extends Observable implements IOpponent, Observer, 
 
     public void broadcastHallo() throws IOException
     {
-        /*
+        /* Laut Google wäre das hier der Code, der Broadcast Adresse findet, jedoch funzt es nicht
         System.setProperty("java.net.preferIPv4Stack" , "true");
         Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
         while (interfaces.hasMoreElements()) {
@@ -144,8 +147,10 @@ public class NetworkOpponent extends Observable implements IOpponent, Observer, 
         return false;
     }
     
-    public void acceptGameRequest()
+    public void acceptGameRequest() throws IOException
     {
+       //Ab hier nicht mehr weiter  gemacht
+       //ServerSocket listen = new ServerSocket(PORT);
         
         //  if accept open tcp server 
         //  send back accept packet with port number
